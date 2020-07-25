@@ -1,7 +1,7 @@
 # GUI.py
 import pygame
 import time
-from generator import gen
+from generator import gen    #generator file is also provided
 
 pygame.font.init()
 
@@ -21,23 +21,23 @@ class Board:
         self.selected = None
         self.screen = win
 
-    def reset_board(self):
+    def reset_board(self):  #reseting the board
         self.board = self.board_reset
         self.cubes = [[Cube(self.board[i][j], i, j, self.width, self.height) for j in range(self.cols)] for i in
                       range(self.rows)]
         self.draw()
 
-    def new_board(self):
+    def new_board(self):    #creating a new board
         self.board = gen()
         self.board_reset = self.board
         self.cubes = [[Cube(self.board[i][j], i, j, self.width, self.height) for j in range(self.cols)] for i in
                       range(self.rows)]
         self.draw()
 
-    def update_model(self):
+    def update_model(self):   
         self.model = [[self.cubes[i][j].value for j in range(self.cols)] for i in range(self.rows)]
 
-    def place(self, val):
+    def place(self, val):        #checking whether the entered value is correct or not
         row, col = self.selected
         if self.cubes[row][col].value == 0:
             self.cubes[row][col].set(val)
@@ -56,7 +56,6 @@ class Board:
         self.cubes[row][col].set_temp(val)
 
     def draw(self):
-        # Draw Grid Lines
         gap = self.width / 9
         for i in range(self.rows + 1):
             if i % 3 == 0 and i != 0:
@@ -65,14 +64,12 @@ class Board:
                 thick = 1
             pygame.draw.line(self.screen, (0, 0, 0), (0, i * gap), (self.width, i * gap), thick)
             pygame.draw.line(self.screen, (0, 0, 0), (i * gap, 0), (i * gap, self.height), thick)
-
-        # Draw Cubes
+            
         for i in range(self.rows):
             for j in range(self.cols):
                 self.cubes[i][j].draw(self.screen)
 
     def select(self, row, col):
-        # Reset all other
         for i in range(self.rows):
             for j in range(self.cols):
                 self.cubes[i][j].selected = False
@@ -128,7 +125,7 @@ class Board:
         else:
             row, col = find
 
-        for i in range(1, 10):
+        for i in range(1, 10):                #solving using backtracking
             if valid(self.model, i, (row, col)):
                 self.model[row][col] = i
                 self.cubes[row][col].set(i)
@@ -349,7 +346,7 @@ def main():
                         if board.is_finished():
                             print("Game over")
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN:             # to capture the mouse click
                 pos = pygame.mouse.get_pos()
                 clicked = board.click(pos)
 
@@ -357,11 +354,11 @@ def main():
                     board.select(clicked[0], clicked[1])
                     key = None
 
-                if 0 <= pos[0] <= 0 + 90 and 560 <= pos[1] <= 560 + 30:
+                if 0 <= pos[0] <= 0 + 90 and 560 <= pos[1] <= 560 + 30:   #checking whether reset is pressed or not
                     print("click")
                     board.reset_board()
 
-                if 100 <= pos[0] <= 100 + 90 and 560 <= pos[1] <= 560 + 30:
+                if 100 <= pos[0] <= 100 + 90 and 560 <= pos[1] <= 560 + 30:   #checking whether new is pressed or not
                     print("new")
                     board.new_board()
 
